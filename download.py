@@ -10,6 +10,9 @@ def download(url_base: str, session: str):
     cookies = {"session": session}
 
     response = requests.get(f"{url_base}/api/v1/challenges", cookies=cookies)
+    if response.status_code >= 400:
+        print(response.text)
+        return
 
     content = json.loads(response.content.decode("utf-8"))
     for item in content["data"]:
@@ -61,5 +64,6 @@ def download(url_base: str, session: str):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(prog="CTFd downloader")
     parser.add_argument("-url", type=str, help="e.g. https://ctfd.nki.gov.hu/")
-    parser.add_argument("-session-cookie", type=str)
+    parser.add_argument("-session", type=str)
     args = parser.parse_args()
+    download(args.url, args.session)
